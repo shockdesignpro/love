@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faqat sen uchun ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      min-height:100vh;
+      font-family:'Montserrat',sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.18), transparent 25%),
+        radial-gradient(circle at 80% 0%, rgba(255,110,160,.18), transparent 28%),
+        linear-gradient(135deg,#180812 0%,#4b102b 42%,#922d54 100%);
+      color:#fff;
+      overflow-x:hidden;
+    }
+
+    .stars::before,.stars::after{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none; z-index:0;
+      background-image:
+        radial-gradient(circle,rgba(255,255,255,.9) 1px,transparent 1.4px),
+        radial-gradient(circle,rgba(255,190,210,.8) 1px,transparent 1.5px);
+      background-size:90px 90px,140px 140px;
+      background-position:0 0,35px 50px;
+      opacity:.18;
+    }
+    .stars::after{transform:scale(1.2);opacity:.08}
+
+    .screen{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 16px;
+      position:relative;
+      z-index:2;
+    }
+
+    .intro{
+      position:fixed;
+      inset:0;
+      z-index:50;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:28px;
+      background:
+        radial-gradient(circle at center,rgba(255,255,255,.06),transparent 30%),
+        linear-gradient(145deg,#210914,#5d1635 55%,#9b365c);
+      transition:opacity .9s ease, visibility .9s ease;
+    }
+    .intro.hide{opacity:0;visibility:hidden}
+
+    .intro-title{
+      text-align:center;
+      animation:fadeUp 1s ease both;
+    }
+    .intro-title small{
+      display:block;
+      text-transform:uppercase;
+      letter-spacing:4px;
+      font-size:12px;
+      opacity:.65;
+      margin-bottom:8px;
+    }
+    .intro-title h1{
+      font-family:'Great Vibes',cursive;
+      font-size:clamp(46px,9vw,82px);
+      font-weight:400;
+    }
+
+    .envelope-wrap{
+      width:min(360px,86vw);
+      height:240px;
+      position:relative;
+      cursor:pointer;
+      filter:drop-shadow(0 30px 30px rgba(0,0,0,.35));
+      animation:float 3.5s ease-in-out infinite;
+    }
+    .envelope{
+      position:absolute; inset:0;
+      background:#f2b6c8;
+      border-radius:0 0 18px 18px;
+      overflow:visible;
+    }
+    .envelope:before{
+      content:"";
+      position:absolute; inset:0;
+      background:linear-gradient(145deg,#ffd9e4,#e993ae);
+      clip-path:polygon(0 0,50% 62%,100% 0,100% 100%,0 100%);
+      border-radius:0 0 18px 18px;
+      z-index:3;
+    }
+    .flap{
+      position:absolute;
+      width:100%; height:58%;
+      top:0; left:0;
+      background:linear-gradient(180deg,#ffcfdd,#e69aaf);
+      clip-path:polygon(0 0,100% 0,50% 100%);
+      transform-origin:top;
+      transition:transform .8s cubic-bezier(.2,.8,.2,1);
+      z-index:5;
+    }
+    .letter-card{
+      position:absolute;
+      left:8%; width:84%;
+      height:84%;
+      bottom:8%;
+      border-radius:14px;
+      background:#fff8fb;
+      color:#7b2946;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:20px;
+      z-index:2;
+      transition:transform .9s cubic-bezier(.2,.8,.2,1);
+      box-shadow:0 12px 25px rgba(92,14,48,.18);
+    }
+    .letter-card p{
+      font-family:'Great Vibes',cursive;
+      font-size:34px;
+      line-height:1.2;
+    }
+    .seal{
+      position:absolute;
+      width:70px;height:70px;
+      border-radius:50%;
+      left:50%;top:54%;
+      transform:translate(-50%,-50%);
+      display:grid;place-items:center;
+      z-index:6;
+      background:linear-gradient(145deg,#b90f45,#7a082d);
+      box-shadow:0 8px 18px rgba(0,0,0,.3), inset 0 2px 5px rgba(255,255,255,.25);
+      font-size:30px;
+      transition:.5s;
+    }
+    .envelope-wrap.open .flap{transform:rotateX(180deg);z-index:1}
+    .envelope-wrap.open .letter-card{transform:translateY(-115px)}
+    .envelope-wrap.open .seal{opacity:0;transform:translate(-50%,-50%) scale(.6)}
+    .tap-hint{font-size:13px;letter-spacing:1px;opacity:.7;animation:pulse 1.5s infinite}
+
+    .main{
+      display:none;
+      width:min(860px,100%);
+      padding-top:40px;
+      padding-bottom:60px;
+      animation:fadeUp 1s ease both;
+    }
+    .main.show{display:block}
+
+    .glass{
+      background:rgba(255,255,255,.09);
+      border:1px solid rgba(255,255,255,.18);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      box-shadow:0 26px 70px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.1);
+      border-radius:30px;
+    }
+
+    .hero{
+      padding:54px 38px;
+      text-align:center;
+      margin-bottom:24px;
+    }
+    .hero .eyebrow{
+      font-size:12px;
+      letter-spacing:4px;
+      text-transform:uppercase;
+      opacity:.65;
+      margin-bottom:12px;
+    }
+    .hero h2{
+      font-family:'Great Vibes',cursive;
+      font-size:clamp(54px,10vw,90px);
+      font-weight:400;
+      line-height:1;
+      text-shadow:0 8px 28px rgba(255,150,185,.35);
+    }
+    .big-heart{
+      display:inline-block;
+      font-size:52px;
+      margin:12px 0 25px;
+      animation:heartbeat 1.2s infinite;
+      filter:drop-shadow(0 0 18px rgba(255,75,125,.75));
+    }
+    .message{
+      max-width:650px;
+      margin:auto;
+      font-size:16.5px;
+      line-height:1.9;
+      color:rgba(255,255,255,.92);
+    }
+    .message strong{color:#ffd7e3}
+
+    .signature{
+      margin-top:28px;
+      font-family:'Great Vibes',cursive;
+      font-size:40px;
+      color:#ffd5e1;
+    }
+
+    .actions{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:28px;
+    }
+    .btn{
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:15px 24px;
+      font-weight:700;
+      font-family:inherit;
+      transition:.25s;
+    }
+    .btn:hover{transform:translateY(-2px) scale(1.02)}
+    .btn-primary{
+      color:#74153a;
+      background:linear-gradient(135deg,#fff,#ffd0de);
+      box-shadow:0 10px 30px rgba(255,170,200,.2);
+    }
+    .btn-ghost{
+      color:#fff;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.18);
+    }
+
+    .secret{
+      max-height:0;
+      opacity:0;
+      overflow:hidden;
+      transition:.8s ease;
+      margin-top:0;
+    }
+    .secret.open{max-height:250px;opacity:1;margin-top:24px}
+    .secret-inner{
+      max-width:620px;
+      margin:auto;
+      padding:22px;
+      border-radius:20px;
+      background:rgba(255,255,255,.08);
+      line-height:1.8;
+      color:#ffe4ed;
+    }
+
+    .gallery-section{
+      padding:34px;
+      margin-bottom:24px;
+    }
+    .section-title{
+      text-align:center;
+      margin-bottom:24px;
+    }
+    .section-title h3{
+      font-family:'Great Vibes',cursive;
+      font-size:48px;
+      font-weight:400;
+    }
+    .section-title p{opacity:.65;font-size:13px;margin-top:4px}
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+    }
+    .photo{
+      aspect-ratio:4/5;
+      border-radius:20px;
+      overflow:hidden;
+      position:relative;
+      border:1px solid rgba(255,255,255,.16);
+      background:
+        linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.04)),
+        url('photo1.jpg') center/cover;
+      box-shadow:0 15px 35px rgba(0,0,0,.2);
+    }
+    .photo:nth-child(2){background-image:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.02)),url('photo2.jpg')}
+    .photo:nth-child(3){background-image:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.02)),url('photo3.jpg')}
+    .photo::after{
+      content:attr(data-label);
+      position:absolute;
+      left:0;right:0;bottom:0;
+      padding:35px 14px 14px;
+      background:linear-gradient(transparent,rgba(30,5,17,.78));
+      font-size:13px;
+      text-align:center;
+    }
+
+    .finale{
+      padding:54px 30px;
+      text-align:center;
+      overflow:hidden;
+      position:relative;
+    }
+    .finale h3{
+      font-family:'Great Vibes',cursive;
+      font-size:clamp(56px,11vw,100px);
+      font-weight:400;
+      transform:scale(.8);
+      opacity:0;
+      transition:1s cubic-bezier(.2,.8,.2,1);
+    }
+    .finale h3.show{transform:scale(1);opacity:1}
+    .forever{
+      margin-top:8px;
+      font-size:14px;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      opacity:.65;
+    }
+
+    .floating-heart{
+      position:fixed;
+      bottom:-40px;
+      pointer-events:none;
+      z-index:10;
+      animation:fly linear forwards;
+      filter:drop-shadow(0 0 8px rgba(255,255,255,.2));
+    }
+
+    .music-note{
+      position:fixed;
+      right:18px;bottom:18px;
+      width:52px;height:52px;
+      border-radius:50%;
+      display:grid;place-items:center;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.10);
+      backdrop-filter:blur(10px);
+      z-index:20;
+      font-size:22px;
+    }
+
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(25px)}
+      to{opacity:1;transform:none}
+    }
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-8px)}
+    }
+    @keyframes pulse{
+      0%,100%{opacity:.45}
+      50%{opacity:1}
+    }
+    @keyframes heartbeat{
+      0%,100%{transform:scale(1)}
+      15%{transform:scale(1.18)}
+      30%{transform:scale(1)}
+      45%{transform:scale(1.12)}
+      60%{transform:scale(1)}
+    }
+    @keyframes fly{
+      0%{transform:translateY(0) rotate(0);opacity:0}
+      10%{opacity:.9}
+      100%{transform:translateY(-115vh) rotate(360deg);opacity:0}
+    }
+
+    @media (max-width:700px){
+      .hero{padding:42px 22px}
+      .message{font-size:15px;line-height:1.8}
+      .gallery-section{padding:24px 16px}
+      .gallery{grid-template-columns:1fr}
+      .photo{aspect-ratio:16/11}
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+
+  <section class="intro" id="intro">
+    <div class="intro-title">
+      <small>Bu faqat sen uchun</small>
+      <h1>Senga bir maktubim bor...</h1>
+    </div>
+
+    <div class="envelope-wrap" id="envelope" onclick="openEnvelope()">
+      <div class="envelope">
+        <div class="flap"></div>
+        <div class="letter-card">
+          <p>Sevgilim,<br>bu maktub sen uchun ❤️</p>
+        </div>
+        <div class="seal">❤</div>
+      </div>
+    </div>
+
+    <div class="tap-hint">Konvertni bosib och ❤️</div>
+  </section>
+
+  <main class="screen">
+    <div class="main" id="main">
+      <section class="hero glass">
+        <div class="eyebrow">qalbimdan chiqqan so'zlar</div>
+        <h2>Sevgilim...</h2>
+        <div class="big-heart">❤️</div>
+
+        <div class="message">
+          Balki ba'zida hislarimni so'z bilan to'liq ifodalay olmasman.
+          Lekin bir narsani bilishingni istayman:
+          <strong>sen hayotimdagi eng chiroyli tasodifsan.</strong>
+          <br><br>
+          Sen bilan oddiy kunlar ham boshqacha tuyuladi.
+          Suhbatlarimizda vaqt qanday o'tib ketganini sezmay qolaman.
+          Tabassuming esa eng oddiy kunimni ham chiroyli qiladi.
+          <br><br>
+          Men sendagi faqat go'zallikni emas,
+          balki qalbingni, kulishingni, fe'lingni va mayda odatlaringni ham yaxshi ko'raman.
+          <br><br>
+          Hayot bizni qayerga olib borishini bilmayman,
+          lekin bir narsani bilaman:
+          <strong>eng go'zal xotiralarimning ichida sen bo'lishingni istayman.</strong>
+        </div>
+
+        <div class="signature">Doim seni o'ylaydigan inson ❤️</div>
+
+        <div class="actions">
+          <button class="btn btn-primary" onclick="toggleSecret()">Meni bos ❤️</button>
+          <button class="btn btn-ghost" onclick="heartBurst()">Yuraklar ✨</button>
+        </div>
+
+        <div class="secret" id="secret">
+          <div class="secret-inner">
+            Agar hozir yonimda bo'lganingda, telefon ekraniga qarab o'tirmasding...
+            Seni mahkam quchoqlab, shunchaki
+            <strong>“Yaxshiyam borsan”</strong> derdim. ❤️
+          </div>
+        </div>
+      </section>
+
+      <section class="gallery-section glass">
+        <div class="section-title">
+          <h3>Bizning xotiralarimiz</h3>
+          <p>photo1.jpg, photo2.jpg va photo3.jpg fayllarini HTML yoniga qo'y</p>
+        </div>
+        <div class="gallery">
+          <div class="photo" data-label="Eng chiroyli lahzalarimiz ❤️"></div>
+          <div class="photo" data-label="Birga o'tgan vaqtimiz ✨"></div>
+          <div class="photo" data-label="Yana juda ko'p xotiralar oldinda 💕"></div>
+        </div>
+      </section>
+
+      <section class="finale glass" id="finale">
+        <div class="section-title">
+          <p>Oxirida aytmoqchi bo'lgan eng muhim gapim...</p>
+        </div>
+        <h3 id="loveText">Men seni sevaman ❤️</h3>
+        <div class="forever">Bugun. Ertaga. Har doim.</div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Istasangiz music.mp3 nomli musiqa faylini HTML yoniga qo'ying -->
+  <audio id="music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+  <button class="music-note" id="musicBtn" onclick="toggleMusic()" title="Musiqa">♫</button>
+
+  <script>
+    let opened = false;
+    let musicPlaying = false;
+
+    function openEnvelope(){
+      if(opened) return;
+      opened = true;
+      const env = document.getElementById('envelope');
+      env.classList.add('open');
+
+      heartBurst();
+
+      setTimeout(() => {
+        document.getElementById('intro').classList.add('hide');
+        document.getElementById('main').classList.add('show');
+        tryPlayMusic();
+
+        setTimeout(() => {
+          document.getElementById('loveText').classList.add('show');
+        }, 900);
+      }, 1500);
+    }
+
+    function toggleSecret(){
+      document.getElementById('secret').classList.toggle('open');
+      heartBurst();
+    }
+
+    function createHeart(){
+      const h = document.createElement('div');
+      h.className='floating-heart';
+      const chars=['❤️','💗','💕','💖','🌹','✨'];
+      h.textContent=chars[Math.floor(Math.random()*chars.length)];
+      h.style.left=(Math.random()*100)+'vw';
+      h.style.fontSize=(16+Math.random()*26)+'px';
+      h.style.animationDuration=(5+Math.random()*5)+'s';
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),10000);
+    }
+
+    function heartBurst(){
+      for(let i=0;i<24;i++){
+        setTimeout(createHeart,i*55);
+      }
+    }
+
+    setInterval(() => {
+      if(opened) createHeart();
+    }, 900);
+
+    function tryPlayMusic(){
+      const music=document.getElementById('music');
+      music.volume=.45;
+      music.play().then(()=>{
+        musicPlaying=true;
+        document.getElementById('musicBtn').textContent='❚❚';
+      }).catch(()=>{});
+    }
+
+    function toggleMusic(){
+      const music=document.getElementById('music');
+      if(musicPlaying){
+        music.pause();
+        musicPlaying=false;
+        document.getElementById('musicBtn').textContent='♫';
+      }else{
+        music.play().then(()=>{
+          musicPlaying=true;
+          document.getElementById('musicBtn').textContent='❚❚';
+        }).catch(()=>{});
+      }
+    }
+
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          document.getElementById('loveText').classList.add('show');
+          heartBurst();
+        }
+      });
+    },{threshold:.5});
+
+    observer.observe(document.getElementById('finale'));
+  </script>
+</body>
+</html>
